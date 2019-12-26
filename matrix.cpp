@@ -32,6 +32,13 @@ Matrix::Matrix(const Matrix &mat) {
 		data[i] = mat.data[i];
 }
 
+Matrix::~Matrix() {
+	if (data != NULL) {
+		delete[] data;
+		data = NULL;
+	}
+}
+
 Matrix Matrix::getRow(int index) {
 	Matrix result(1, column);
 	for (int j = 0; j < column; j++)
@@ -64,14 +71,74 @@ Matrix Matrix::getColumns(int beginIndex, int endIndex) {
 	return result;
 }
 
-Matrix::~Matrix() {
-	if (data != NULL) {
-		delete[] data;
-		data = NULL;
+Matrix Matrix::operator+(const Matrix &mat) const {
+	if (row != mat.row || column != mat.column) {
+		cerr << "Error!" << endl;
+		exit(0);
 	}
+	Matrix result(row, column);
+	for(int i = 0; i < row * column; i++)
+		result.data[i] = data[i] + mat.data[i];
+	return result;
 }
 
-istream& operator>>(istream &is, Matrix &mat) {
+Matrix Matrix::operator-(const Matrix &mat) const {
+	if (row != mat.row || column != mat.column) {
+		cerr << "Error!" << endl;
+		exit(0);
+	}
+	Matrix result(row, column);
+	for(int i = 0; i < row * column; i++)
+		result.data[i] = data[i] - mat.data[i];
+	return result;
+}
+
+Matrix Matrix::operator*(double scale) const {
+	Matrix result(row, column);
+	for(int i = 0; i < row * column; i++)
+		result.data[i] = scale * data[i];
+	return result;
+}
+
+Matrix operator*(double scale, const Matrix &mat) {
+	int row = mat.row;
+	int column = mat.column;
+	Matrix result(row, column);
+	for(int i = 0; i < row * column; i++)
+		result.data[i] = scale * mat.data[i];
+	return result;
+}
+
+Matrix Matrix::operator*(const Matrix &mat) const {
+	if (column != mat.row) {
+		cerr << "Error!" << endl;
+		exit(0);
+	}
+	Matrix result(row, mat.column);
+	for (int i = 0; i < row; i++)
+		for (int j = 0; j < mat.column; j++)
+			for (int k = 0; k < column; k++)
+				result.data[i * row + j] += data[i * row + k] * mat.data[k * row + j];
+	return result;	
+}
+
+Row Matrix::operator[](int index) {
+	if (index < 0 || index >= row) {
+		cerr << "Error!" << endl;
+		exit(0);
+	}
+	return Row(column, data + index * column);
+}
+
+const Row Matrix::operator[](int index) const {
+	if (index < 0 || index >= row) {
+		cerr << "Error!" << endl;
+		exit(0);
+	}
+	return Row(column, data + index * column);
+}
+
+istream& operator>>(istream &is, const Matrix &mat) {
 	int row = mat.row;
 	int column = mat.column;
 	for(int i = 0; i < row * column; i++)
@@ -79,7 +146,7 @@ istream& operator>>(istream &is, Matrix &mat) {
 	return is;
 }
 
-ostream& operator<<(ostream &os, Matrix &mat) {
+ostream& operator<<(ostream &os, const Matrix &mat) {
 	int row = mat.row;
 	int column = mat.column;
 	for(int i = 0; i < row * column; i++)
