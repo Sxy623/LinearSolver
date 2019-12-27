@@ -9,6 +9,8 @@ public:
 	double& operator[](int index);
 	double operator[](int index) const;
 
+	void printPolynomial();
+
 private:
 	int size;
 	double *data;

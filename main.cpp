@@ -21,9 +21,14 @@ int main() {
 	Matrix e(1, n);
 	cin >> e;
 
-	cout << c << a << b << d << e;
-
 	VanillaSimplexSolver vanillaSimplexSolver(n, m, c, a, b, d, e);
+
+	cout << "----------Origin----------" << endl;
+	vanillaSimplexSolver.print();
+
+	cout << "----------Relaxation----------" << endl;
+	vanillaSimplexSolver.relax();
+	vanillaSimplexSolver.print();
 
 	return 0;
 }

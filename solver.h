@@ -11,6 +11,8 @@ public:
 	void relax();
 	virtual void solve() = 0;
 
+	void print();
+
 private:
 	int n, m;
 	Matrix c;

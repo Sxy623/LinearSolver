@@ -72,11 +72,41 @@ Matrix Matrix::getColumns(int beginIndex, int endIndex) {
 }
 
 void Matrix::appendRow(Matrix &mat) {
-
+	if (column != mat.column) {
+		cerr << "Error!" << endl;
+		exit(0);
+	}
+	int count = 0;
+	int total = (row + mat.row) * column;
+	double *tempData = new double[total];
+	for (int i = 0; i < row; i++)
+		for (int j = 0; j < column; j++)
+			tempData[count++] = data[i * column + j];
+	for (int i = 0; i < mat.row; i++)
+		for (int j = 0; j < column; j++)
+			tempData[count++] = mat.data[i * column + j];
+	delete[] data;
+	row = row + mat.row;
+	data = tempData; 
 }
 
 void Matrix::appendColumn(Matrix &mat) {
-
+	if (row != mat.row) {
+		cerr << "Error!" << endl;
+		exit(0);
+	}
+	int count = 0;
+	int total = row * (column + mat.column);
+	double *tempData = new double[total];
+	for (int i = 0; i < row; i++) {
+		for (int j = 0; j < column; j++)
+			tempData[count++] = data[i * column + j];
+		for (int j = 0; j < mat.column; j++)
+			tempData[count++] = mat.data[i * mat.column + j];
+	}		
+	delete[] data;
+	column = column + mat.column;
+	data = tempData; 
 }
 
 Matrix Matrix::operator+(const Matrix &mat) const {

@@ -1,4 +1,5 @@
 #include "row.h"
+#include "utility.h"
 #include <iostream>
 using namespace std;
 
@@ -26,4 +27,15 @@ double Row::operator[](int index) const {
 		exit(0);
 	}
 	return data[index];
+}
+
+void Row::printPolynomial() {
+	for (int i = 0; i < size; i++) {
+		if (i == 0) {
+			printItem(data[i], i);
+			continue;
+		}
+		printf(" + ");
+		printItem(data[i], i);
+	}
 }

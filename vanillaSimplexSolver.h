@@ -3,7 +3,7 @@
 
 #include "solver.h"
 
-class VanillaSimplexSolver: Solver {
+class VanillaSimplexSolver: public Solver {
 public:
 	VanillaSimplexSolver(int n, int m, Matrix c, Matrix a, Matrix b, Matrix d, Matrix e);
 	~VanillaSimplexSolver();
