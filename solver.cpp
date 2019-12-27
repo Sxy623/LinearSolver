@@ -36,6 +36,39 @@ void Solver::relax() {
 	}
 }
 
+void Solver::normalize() {
+	Matrix one = Matrix(1, 1, 1);
+	relax();
+	for (int i = 0; i < m; i++) {
+		if (b[i][0] >= 0) continue;
+		 b[i][0] *= -1;
+		 for (int j = 0; j < n; j++) {
+		 	a[i][j] *= -1;
+		 }
+	}
+	for (int j = 0; j < n; j++) {
+		if (equal(e[0][j], 1)) continue;
+		if (equal(e[0][j], -1)) {
+			c[0][j] *= -1;
+			e[0][j] = 1;
+			for (int i = 0; i < m; i++) {
+				a[i][j] *= -1;
+			}	
+			continue;
+		}
+		if (equal(e[0][j], 0)) {
+			n++;
+			c.appendColumn(one);
+			c[0][n - 1] = c[0][j] * -1;
+			e[0][j] = 1;
+			e.appendColumn(one);
+			Matrix newColumn = a.getColumn(j) * -1;
+			a.appendColumn(newColumn);
+			continue;
+		}
+	}
+}
+
 void Solver::print() {
 	cout << "min" << endl;
 	c[0].printPolynomial();

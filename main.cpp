@@ -30,5 +30,9 @@ int main() {
 	vanillaSimplexSolver.relax();
 	vanillaSimplexSolver.print();
 
+	cout << "----------Normalization----------" << endl;
+	vanillaSimplexSolver.normalize();
+	vanillaSimplexSolver.print();
+
 	return 0;
 }

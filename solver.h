@@ -9,6 +9,7 @@ public:
 	~Solver();
 
 	void relax();
+	void normalize();
 	virtual void solve() = 0;
 
 	void print();
