@@ -1,6 +1,6 @@
-#include <cstdio>
-#include <iostream>
 #include "matrix.h"
+#include "vanillaSimplexSolver.h"
+#include <iostream>
 using namespace std;
 
 int main() {
@@ -22,6 +22,8 @@ int main() {
 	cin >> e;
 
 	cout << c << a << b << d << e;
+
+	VanillaSimplexSolver vanillaSimplexSolver(n, m, c, a, b, d, e);
 
 	return 0;
 }

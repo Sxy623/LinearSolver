@@ -1,9 +1,6 @@
 #ifndef ROW_H
 #define ROW_H
 
-#include <iostream>
-using namespace std;
-
 class Row {
 public:
 	Row();

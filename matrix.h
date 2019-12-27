@@ -1,8 +1,8 @@
 #ifndef MATRIX_H
 #define MATRIX_H
 
-#include <iostream>
 #include "row.h"
+#include <iostream>
 using namespace std;
 
 class Matrix {
@@ -18,6 +18,9 @@ public:
 	Matrix getColumn(int index);
 	Matrix getRows(int beginIndex, int endIndex);
 	Matrix getColumns(int beginIndex, int endIndex);
+
+	void appendRow(Matrix &mat);
+	void appendColumn(Matrix &mat);
 
 	Matrix operator+(const Matrix &mat) const;
 	Matrix operator-(const Matrix &mat) const;

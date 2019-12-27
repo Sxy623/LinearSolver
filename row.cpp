@@ -1,4 +1,6 @@
 #include "row.h"
+#include <iostream>
+using namespace std;
 
 Row::Row() {
 	size = 0;

@@ -71,6 +71,14 @@ Matrix Matrix::getColumns(int beginIndex, int endIndex) {
 	return result;
 }
 
+void Matrix::appendRow(Matrix &mat) {
+
+}
+
+void Matrix::appendColumn(Matrix &mat) {
+
+}
+
 Matrix Matrix::operator+(const Matrix &mat) const {
 	if (row != mat.row || column != mat.column) {
 		cerr << "Error!" << endl;
@@ -124,7 +132,7 @@ Matrix Matrix::operator*(const Matrix &mat) const {
 
 Row Matrix::operator[](int index) {
 	if (index < 0 || index >= row) {
-		cerr << "Error!" << endl;
+		cerr << "Index out of range: " << index << endl;
 		exit(0);
 	}
 	return Row(column, data + index * column);
@@ -132,7 +140,7 @@ Row Matrix::operator[](int index) {
 
 const Row Matrix::operator[](int index) const {
 	if (index < 0 || index >= row) {
-		cerr << "Error!" << endl;
+		cerr << "Index out of range: " << index << endl;
 		exit(0);
 	}
 	return Row(column, data + index * column);
