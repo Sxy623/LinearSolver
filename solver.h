@@ -2,6 +2,8 @@
 #define SOLVER_H
 
 #include "matrix.h"
+#include <vector>
+using namespace std;
 
 class Solver {
 public:
@@ -10,7 +12,7 @@ public:
 
 	void relax();
 	void normalize();
-	virtual void solve() = 0;
+	virtual void solve(int &k, double &y, Matrix &x) = 0;
 
 	void print();
 
@@ -19,6 +21,8 @@ private:
 	Matrix c;
 	Matrix a, b, d;
 	Matrix e;
+	vector<int> negative;  // xi -> -xi, if xi <= 0
+	vector<pair<int, int> > noConstraints;  // xi -> xi - xj, if no constraints on xi
 };
 
 #endif

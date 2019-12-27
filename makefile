@@ -1,4 +1,4 @@
-OBJS = main.o utility.o matrix.o row.o solver.o vanillaSimplexSolver.o
+OBJS = main.o utility.o matrix.o row.o solver.o vanillaSimplexSolver.o dualSimplexSolver.o 
 
 main: $(OBJS)
 	g++ -o main $(OBJS)
@@ -14,5 +14,7 @@ solver.o: solver.cpp solver.h
 	g++ -c solver.cpp
 vanillaSimplexSolver.o: vanillaSimplexSolver.cpp vanillaSimplexSolver.h
 	g++ -c vanillaSimplexSolver.cpp
+dualSimplexSolver.o: dualSimplexSolver.cpp dualSimplexSolver.h
+	g++ -c dualSimplexSolver.cpp
 clean:
 	rm -rf *.o

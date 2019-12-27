@@ -4,7 +4,10 @@
 using namespace std;
 
 Solver::Solver(int n, int m, Matrix c, Matrix a, Matrix b, Matrix d, Matrix e): 
-	n(n), m(m), c(c), a(a), b(b), d(d), e(e) {}
+	n(n), m(m), c(c), a(a), b(b), d(d), e(e) {
+	negative.clear();
+	noConstraints.clear();
+}
 
 Solver::~Solver() {}
 
@@ -53,7 +56,8 @@ void Solver::normalize() {
 			e[0][j] = 1;
 			for (int i = 0; i < m; i++) {
 				a[i][j] *= -1;
-			}	
+			}
+			negative.push_back(j);
 			continue;
 		}
 		if (equal(e[0][j], 0)) {
@@ -64,6 +68,7 @@ void Solver::normalize() {
 			e.appendColumn(one);
 			Matrix newColumn = a.getColumn(j) * -1;
 			a.appendColumn(newColumn);
+			noConstraints.push_back(make_pair(j, n - 1));
 			continue;
 		}
 	}

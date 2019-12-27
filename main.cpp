@@ -34,5 +34,10 @@ int main() {
 	vanillaSimplexSolver.normalize();
 	vanillaSimplexSolver.print();
 
+	// int k
+	// double y;
+	// Matrix x;
+	// vanillaSimplexSolver.solve(k, y, x);
+
 	return 0;
 }

@@ -8,7 +8,7 @@ public:
 	VanillaSimplexSolver(int n, int m, Matrix c, Matrix a, Matrix b, Matrix d, Matrix e);
 	~VanillaSimplexSolver();
 
-	virtual void solve();
+	virtual void solve(int &k, double &y, Matrix &x);
 };
 
 #endif
