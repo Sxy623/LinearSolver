@@ -80,7 +80,7 @@ void VanillaSimplexSolver::solve(int &k, double &y, Matrix &x) {
                 }
                 if (flag) {
                     // All numbers in column i are <= 0: unbound!
-                    k = -1;
+                    k = 0;
                     return;
                 }
                 // get max index
@@ -100,24 +100,24 @@ void VanillaSimplexSolver::solve(int &k, double &y, Matrix &x) {
                     return;
                 }
             }
-            // judge infinity
-            for (int i = 0; i < nonManualVariableCount; i++) {
-                if (checkedArray[i] == 0) {
-                    // check if it's not base
-                    bool flag = false;
-                    for (auto &base : baseIndex) {
-                        if (base == i) {
-                            flag = true;
-                            break;
-                        }
-                    }
-                    if (!flag) {
-                        // infinite solutions!
-                        k = 0;
-                        return;
-                    }
-                }
-            }
+//            // judge infinity
+//            for (int i = 0; i < nonManualVariableCount; i++) {
+//                if (checkedArray[i] == 0) {
+//                    // check if it's not base
+//                    bool flag = false;
+//                    for (auto &base : baseIndex) {
+//                        if (base == i) {
+//                            flag = true;
+//                            break;
+//                        }
+//                    }
+//                    if (!flag) {
+//                        // infinite solutions!
+//                        k = 0;
+//                        return;
+//                    }
+//                }
+//            }
             // output answer
             k = 1;
             for (int i = 0; i < m; i++) {
