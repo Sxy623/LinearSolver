@@ -1,5 +1,6 @@
 #include "vanillaSimplexSolver.h"
 #include "utility.h"
+#include "omp.h"
 
 VanillaSimplexSolver::VanillaSimplexSolver(int n, int m, Matrix c, Matrix a, Matrix b, Matrix d,
                                            Matrix e) :
@@ -16,7 +17,9 @@ void VanillaSimplexSolver::exchange(int inIndex, int outIndex) {
     pivot.multi(toOneRatio);
     pivotB.multi(toOneRatio);
     // normalize other rows to zero
-    // TODO: parallel
+#ifdef PARALLEL
+#pragma omp parallel for
+#endif
     for (int i = 0; i < m; i++) {
         if (i != outIndex) {
             Row another = a[i];
@@ -25,6 +28,9 @@ void VanillaSimplexSolver::exchange(int inIndex, int outIndex) {
             another.addRow(pivot, ratio);
             anotherB.addRow(pivotB, ratio);
         }
+#ifdef DEBUG
+        printf("parallel: i = %d, run on Thread %d!\n", i, omp_get_thread_num());
+#endif
     }
     // transform checked number to zero
     Row cRow = c[0];

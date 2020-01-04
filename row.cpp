@@ -34,14 +34,12 @@ void Row::addRow(Row &another, double ratio) {
         cerr << "Error: Row size " << another.size << " " << size;
         exit(-1);
     }
-    // TODO parallel
     for (int i = 0; i < size; i++) {
         data[i] += another.data[i] * ratio;
     }
 }
 
 void Row::multi(double ratio) {
-    // TODO parallel
     for (int i = 0; i < size; i++) {
         data[i] *= ratio;
     }

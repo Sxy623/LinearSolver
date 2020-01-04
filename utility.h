@@ -7,6 +7,7 @@
 
 // comment this in release!
 #define DEBUG
+#define PARALLEL
 
 const double EPS = 1e-5; 
 
