@@ -1,43 +1,55 @@
 #include "matrix.h"
 #include "vanillaSimplexSolver.h"
 #include <iostream>
+
 using namespace std;
 
 int main() {
-	
-	int n, m;
-	cin >> n >> m;
 
-	Matrix c(1, n);
-	cin >> c;
+    int n, m;
+    cin >> n >> m;
 
-	Matrix mat(m, n + 2);
-	cin >> mat;
+    Matrix c(1, n);
+    cin >> c;
 
-	Matrix a = mat.getColumns(0, n);
-	Matrix b = mat.getColumn(n);
-	Matrix d = mat.getColumn(n + 1);
+    Matrix mat(m, n + 2);
+    cin >> mat;
 
-	Matrix e(1, n);
-	cin >> e;
+    Matrix a = mat.getColumns(0, n);
+    Matrix b = mat.getColumn(n);
+    Matrix d = mat.getColumn(n + 1);
 
-	VanillaSimplexSolver vanillaSimplexSolver(n, m, c, a, b, d, e);
+    Matrix e(1, n);
+    cin >> e;
 
-	cout << "----------Origin----------" << endl;
-	vanillaSimplexSolver.print();
+    VanillaSimplexSolver vanillaSimplexSolver(n, m, c, a, b, d, e);
 
-	cout << "----------Relaxation----------" << endl;
-	vanillaSimplexSolver.relax();
-	vanillaSimplexSolver.print();
+#ifdef DEBUG
+    cout << "----------Origin----------" << endl;
+    vanillaSimplexSolver.print();
 
-	cout << "----------Normalization----------" << endl;
-	vanillaSimplexSolver.normalize();
-	vanillaSimplexSolver.print();
+    cout << "----------Relaxation----------" << endl;
+    vanillaSimplexSolver.relax();
+    vanillaSimplexSolver.print();
 
-	// int k
-	// double y;
-	// Matrix x;
-	// vanillaSimplexSolver.solve(k, y, x);
+    cout << "----------Normalization----------" << endl;
+    vanillaSimplexSolver.normalize();
+    vanillaSimplexSolver.print();
+#else
+    vanillaSimplexSolver.normalize();
+#endif
 
-	return 0;
+    int k;
+    double y;
+    Matrix x(1, n);
+    vanillaSimplexSolver.solve(k, y, x);
+    cout << k << endl;
+    if (k == 1) {
+        cout << y << endl;
+        for (int i = 0; i < n; i++) {
+            cout << x[0][i] << " ";
+        }
+    }
+
+    return 0;
 }

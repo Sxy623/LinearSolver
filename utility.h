@@ -4,6 +4,10 @@
 #define ITEM_FORMAT "%8.2fx%-3d"
 #define ITEM_NO_COEFFICIENT_FORMAT "        x%-3d"
 #define DOUBLE_FORMAT "%8.2f"
+
+// comment this in release!
+#define DEBUG
+
 const double EPS = 1e-5; 
 
 bool equal(double a, double b);

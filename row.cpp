@@ -29,6 +29,24 @@ double Row::operator[](int index) const {
 	return data[index];
 }
 
+void Row::addRow(Row &another, double ratio) {
+    if (another.size != size) {
+        cerr << "Error: Row size " << another.size << " " << size;
+        exit(-1);
+    }
+    // TODO parallel
+    for (int i = 0; i < size; i++) {
+        data[i] += another.data[i] * ratio;
+    }
+}
+
+void Row::multi(double ratio) {
+    // TODO parallel
+    for (int i = 0; i < size; i++) {
+        data[i] *= ratio;
+    }
+}
+
 void Row::printPolynomial() {
 	for (int i = 0; i < size; i++) {
 		if (i == 0) {
