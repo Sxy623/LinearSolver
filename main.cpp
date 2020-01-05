@@ -1,5 +1,6 @@
 #include "matrix.h"
 #include "vanillaSimplexSolver.h"
+#include "dualSimplexSolver.h"
 #include <iostream>
 
 using namespace std;
@@ -22,7 +23,7 @@ int main() {
     Matrix e(1, n);
     cin >> e;
 
-    VanillaSimplexSolver vanillaSimplexSolver(n, m, c, a, b, d, e);
+    DualSimplexSolver vanillaSimplexSolver(n, m, c, a, b, d, e);
 
 #ifdef DEBUG
     cout << "----------Origin----------" << endl;

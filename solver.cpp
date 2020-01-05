@@ -69,7 +69,7 @@ void Solver::normalize() {
             e.appendColumn(one);
             Matrix newColumn = a.getColumn(j) * -1;
             a.appendColumn(newColumn);
-            noConstraints.push_back(make_pair(j, n - 1));
+            noConstraints.emplace_back(j, n - 1);
             continue;
         }
     }

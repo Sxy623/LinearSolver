@@ -7,9 +7,10 @@
 
 // comment this in release!
 #define DEBUG
-#define PARALLEL
+//#define PARALLEL
 
-const double EPS = 1e-5; 
+const double EPS = 1e-5;
+
 
 bool equal(double a, double b);
 void printSign(double flag);

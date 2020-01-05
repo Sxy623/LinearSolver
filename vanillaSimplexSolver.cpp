@@ -6,7 +6,7 @@ VanillaSimplexSolver::VanillaSimplexSolver(int n, int m, Matrix c, Matrix a, Mat
                                            Matrix e) :
         Solver(n, m, c, a, b, d, e) {}
 
-VanillaSimplexSolver::~VanillaSimplexSolver() {}
+VanillaSimplexSolver::~VanillaSimplexSolver() = default;
 
 void VanillaSimplexSolver::exchange(int inIndex, int outIndex) {
 #ifdef DEBUG
@@ -46,7 +46,7 @@ void VanillaSimplexSolver::exchange(int inIndex, int outIndex) {
 
 void VanillaSimplexSolver::solve(int &k, double &y, Matrix &x) {
     nonManualVariableCount = n;
-    // add manual variables
+    // add artificial variables
     Matrix zero = Matrix(m, 1);
     Matrix one = Matrix(1, 1, 1);
     Matrix matrixM = Matrix(1, 1, M);
