@@ -6,7 +6,7 @@ VanillaSimplexSolver::VanillaSimplexSolver(int n, int m, Matrix c, Matrix a, Mat
                                            Matrix e) :
         Solver(n, m, c, a, b, d, e) {}
 
-VanillaSimplexSolver::~VanillaSimplexSolver() {}
+VanillaSimplexSolver::~VanillaSimplexSolver() = default;
 
 void VanillaSimplexSolver::exchange(int inIndex, int outIndex) {
     baseIndex[outIndex] = inIndex;
@@ -29,7 +29,9 @@ void VanillaSimplexSolver::exchange(int inIndex, int outIndex) {
             anotherB.addRow(pivotB, ratio);
         }
 #ifdef DEBUG
+#ifdef PARALLEL
         printf("parallel: i = %d, run on Thread %d!\n", i, omp_get_thread_num());
+#endif
 #endif
     }
     // transform checked number to zero
@@ -41,7 +43,7 @@ void VanillaSimplexSolver::exchange(int inIndex, int outIndex) {
 
 void VanillaSimplexSolver::solve(int &k, double &y, Matrix &x) {
     nonManualVariableCount = n;
-    // add manual variables
+    // add artificial variables
     // TODO: optimize
     Matrix zero = Matrix(m, 1);
     Matrix one = Matrix(1, 1, 1);

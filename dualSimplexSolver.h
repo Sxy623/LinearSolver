@@ -2,13 +2,24 @@
 #define DUAL_SIMPLEX_SOLVER_H
 
 #include "solver.h"
+#include <vector>
+#include <cmath>
 
-class DualSimplexSolver: public Solver {
+#define MAX = 1e9
+
+class DualSimplexSolver : public Solver {
 public:
-	DualSimplexSolver(int n, int m, Matrix c, Matrix a, Matrix b, Matrix d, Matrix e);
-	~DualSimplexSolver();
+    DualSimplexSolver(int n, int m, const Matrix& c, const Matrix& a, const Matrix& b, const Matrix& d, const Matrix& e);
 
-	virtual void solve(int &k, double &y, Matrix &x);
+    ~DualSimplexSolver();
+
+    void solve(int &k, double &y, Matrix &x) override;
+    void printDual();
+private:
+    double targetValue;
+    std::vector<int> baseIndices;
+    std::vector<int> verifyIndices;
+    void pivot(int outBaseIndex, int inBaseIndex);
 };
 
 #endif
