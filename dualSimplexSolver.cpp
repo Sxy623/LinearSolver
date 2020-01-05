@@ -33,7 +33,7 @@ void DualSimplexSolver::solve(int &k, double &y, Matrix &x) {
         int inBaseIndex = -1; // index in verifyIndices vector
         double tb = 0.0;
         for (auto i = 0; i < m; i++) {
-            // always return the smallset one that is smaller than 0
+            // always return the smallest one that is smaller than 0
             if (b[i][0] < tb) {
                 tb = b[i][0];
                 outBaseIndex = i;
@@ -43,6 +43,10 @@ void DualSimplexSolver::solve(int &k, double &y, Matrix &x) {
             // no negative value in b
             // It's the optimal solution ?
             k = 1;
+            y = targetValue;
+            for (auto i = 0; i < m; i++) {
+                x[0][baseIndices[i]] = b[i][0];
+            }
             return;
         }
         // at least one smaller than 0
