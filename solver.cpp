@@ -75,6 +75,18 @@ void Solver::normalize() {
     }
 }
 
+void Solver::recover(Matrix &x) {
+    for (auto iter : negative) {
+        int p = negative[iter];
+        x[0][p] *= -1;
+    }
+    for (auto iter = noConstraints.begin(); iter != noConstraints.end(); iter++) {
+        int p = iter->first;
+        int q = iter->second;
+        x[0][p] = x[0][p] - x[0][q];
+    }
+}
+
 #ifdef DEBUG
 
 void Solver::print() {

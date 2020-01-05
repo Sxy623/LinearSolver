@@ -14,6 +14,7 @@ public:
 	void relax();
 	void normalize();
 	virtual void solve(int &k, double &y, Matrix &x) = 0;
+	void recover(Matrix &x);
 #ifdef DEBUG
 	void print();
 #endif

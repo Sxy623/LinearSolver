@@ -48,6 +48,7 @@ int main() {
     cout << endl;
     cout << ">>> Simplex Method" << endl;
     vanillaSimplexSolver.solve(k, y, x);
+    vanillaSimplexSolver.recover(x);
     cout << k << endl;
     if (k == 1) {
         cout << y << endl;
@@ -61,6 +62,7 @@ int main() {
     cout << ">>> Dual Simplex Method" << endl;
     dualSimplexSolver.normalize();
     dualSimplexSolver.solve(k, y, x);
+    vanillaSimplexSolver.recover(x);
     cout << k << endl;
     if (k == 1) {
         cout << y << endl;
