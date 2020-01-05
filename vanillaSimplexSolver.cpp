@@ -133,9 +133,7 @@ void VanillaSimplexSolver::solve(int &k, double &y, Matrix &x) {
             k = 1;
             for (int i = 0; i < m; i++) {
                 int base = baseIndex[i];
-                if (base < m) {
-                    x[0][base] = b[i][0];
-                }
+                x[0][base] = b[i][0];
             }
             y = value;
             return;
