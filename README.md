@@ -1,1 +1,1 @@
-# LinearProgrammingSolver
+# LinearSolver
