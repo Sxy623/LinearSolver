@@ -1,4 +1,7 @@
 #include "dualSimplexSolver.h"
+#ifdef PARALLEL
+#include "omp.h"
+#endif
 
 DualSimplexSolver::DualSimplexSolver(int n, int m, const Matrix& c, const Matrix& a, const Matrix& b, const Matrix& d, const Matrix& e) :
         Solver(n, m, c, a, b, d, e) {
@@ -92,12 +95,13 @@ void DualSimplexSolver::pivot(int outBaseIndex, int inBaseIndex) {
             anotherA.addRow(rowA, ratio);
             anotherB.addRow(rowB, ratio);
         }
-    }
 #ifdef DEBUG
 #ifdef PARALLEL
     printf("parallel: i = %d, run on Thread %d!\n", i, omp_get_thread_num());
 #endif
 #endif
+    }
+
     // update the constrains
     auto rowC = c[0];
     double ratio = -rowC[verifyIndices[inBaseIndex]];
@@ -110,7 +114,7 @@ void DualSimplexSolver::pivot(int outBaseIndex, int inBaseIndex) {
 }
 
 void DualSimplexSolver::printDual() {
-    printf("\n>>> Dual Simplex Table\n    ");
+    printf("============  Simplex Table  ===========\n    ");
     for (int i = 0; i < n; i++) {
         printf(DOUBLE_FORMAT, c[0][i]);
     }

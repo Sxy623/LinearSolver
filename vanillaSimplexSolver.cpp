@@ -1,6 +1,8 @@
 #include "vanillaSimplexSolver.h"
 #include "utility.h"
+#ifdef PARALLEL
 #include "omp.h"
+#endif
 
 VanillaSimplexSolver::VanillaSimplexSolver(int n, int m, Matrix c, Matrix a, Matrix b, Matrix d,
                                            Matrix e) :
@@ -163,7 +165,7 @@ void VanillaSimplexSolver::solve(int &k, double &y, Matrix &x) {
 #ifdef DEBUG
 
 void VanillaSimplexSolver::printSimplexTable() {
-    printf("=======Simplex Table======\n    ");
+    printf("============  Simplex Table  ===========\n    ");
     for (int i = 0; i < n; i++) {
         printf(DOUBLE_FORMAT, c[0][i]);
     }

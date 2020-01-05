@@ -23,17 +23,18 @@ int main() {
     Matrix e(1, n);
     cin >> e;
 
-    DualSimplexSolver vanillaSimplexSolver(n, m, c, a, b, d, e);
+    VanillaSimplexSolver vanillaSimplexSolver(n, m, c, a, b, d, e);
+    DualSimplexSolver dualSimplexSolver(n, m, c, a, b, d, e);
 
 #ifdef DEBUG
-    cout << "----------Origin----------" << endl;
+    cout << "===============  Origin  ===============" << endl;
     vanillaSimplexSolver.print();
 
-    cout << "----------Relaxation----------" << endl;
+    cout << "=============  Relaxation  =============" << endl;
     vanillaSimplexSolver.relax();
     vanillaSimplexSolver.print();
 
-    cout << "----------Normalization----------" << endl;
+    cout << "============  Normalization  ===========" << endl;
     vanillaSimplexSolver.normalize();
     vanillaSimplexSolver.print();
 #else
@@ -43,6 +44,9 @@ int main() {
     int k;
     double y;
     Matrix x(1, n + 2 * m);
+
+    cout << endl;
+    cout << ">>> Simplex Method" << endl;
     vanillaSimplexSolver.solve(k, y, x);
     cout << k << endl;
     if (k == 1) {
@@ -51,6 +55,20 @@ int main() {
             cout << x[0][i] << " ";
         }
     }
+    cout << endl;
+
+    cout << endl;
+    cout << ">>> Dual Simplex Method" << endl;
+    dualSimplexSolver.normalize();
+    dualSimplexSolver.solve(k, y, x);
+    cout << k << endl;
+    if (k == 1) {
+        cout << y << endl;
+        for (int i = 0; i < n; i++) {
+            cout << x[0][i] << " ";
+        }
+    }
+    cout << endl;
 
     return 0;
 }
