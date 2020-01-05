@@ -2,6 +2,7 @@
 #define SOLVER_H
 
 #include "matrix.h"
+#include "utility.h"
 #include <vector>
 using namespace std;
 
@@ -13,10 +14,11 @@ public:
 	void relax();
 	void normalize();
 	virtual void solve(int &k, double &y, Matrix &x) = 0;
-
+#ifdef DEBUG
 	void print();
+#endif
 
-private:
+protected:
 	int n, m;
 	Matrix c;
 	Matrix a, b, d;

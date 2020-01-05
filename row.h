@@ -3,17 +3,23 @@
 
 class Row {
 public:
-	Row();
-	Row(int size, double *data);
+    Row();
 
-	double& operator[](int index);
-	double operator[](int index) const;
+    Row(int size, double *data);
 
-	void printPolynomial();
+    double &operator[](int index);
+
+    double operator[](int index) const;
+
+    void addRow(Row &another, double ratio);
+
+    void multi(double ratio);
+
+    void printPolynomial();
 
 private:
-	int size;
-	double *data;
+    int size;
+    double *data;
 };
 
 #endif

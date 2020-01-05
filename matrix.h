@@ -3,24 +3,34 @@
 
 #include "row.h"
 #include <iostream>
+
 using namespace std;
 
 class Matrix {
 public:
-	Matrix();
-	Matrix(int row, int column);
-	Matrix(int row, int column, double constant);
-	Matrix(int row, int column, double *data);
-	Matrix(const Matrix &mat);
-	~Matrix();
+    Matrix();
 
-	Matrix getRow(int index);
-	Matrix getColumn(int index);
-	Matrix getRows(int beginIndex, int endIndex);
-	Matrix getColumns(int beginIndex, int endIndex);
+    Matrix(int row, int column);
 
-	void appendRow(Matrix &mat);
-	void appendColumn(Matrix &mat);
+    Matrix(int row, int column, double constant);
+
+    Matrix(int row, int column, double *data);
+
+    Matrix(const Matrix &mat);
+
+    ~Matrix();
+
+    Matrix getRow(int index);
+
+    Matrix getColumn(int index);
+
+    Matrix getRows(int beginIndex, int endIndex);
+
+    Matrix getColumns(int beginIndex, int endIndex);
+
+    void appendRow(Matrix &mat);
+
+    void appendColumn(Matrix &mat);
 
 	Matrix operator+(const Matrix &mat) const;
 	Matrix operator-(const Matrix &mat) const;
@@ -28,16 +38,18 @@ public:
 	friend Matrix operator*(double scale, const Matrix &mat);
 	Matrix operator*(const Matrix &mat) const;
 
-	Row operator[](int index);
-	const Row operator[](int index) const;
+    Row operator[](int index);
 
-	friend istream& operator>>(istream &is, const Matrix &mat);
-	friend ostream& operator<<(ostream &os, const Matrix &mat);
+    const Row operator[](int index) const;
+
+    friend istream &operator>>(istream &is, const Matrix &mat);
+
+    friend ostream &operator<<(ostream &os, const Matrix &mat);
 
 private:
-	int row;
-	int column;
-	double *data;
+    int row;
+    int column;
+    double *data;
 };
 
 #endif
