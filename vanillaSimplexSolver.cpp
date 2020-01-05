@@ -9,6 +9,9 @@ VanillaSimplexSolver::VanillaSimplexSolver(int n, int m, Matrix c, Matrix a, Mat
 VanillaSimplexSolver::~VanillaSimplexSolver() = default;
 
 void VanillaSimplexSolver::exchange(int inIndex, int outIndex) {
+#ifdef DEBUG
+    cout << "in: x" << inIndex << " out: x" << baseIndex[outIndex] << endl;
+#endif
     baseIndex[outIndex] = inIndex;
     Row pivot = a[outIndex];
     Row pivotB = b[outIndex];
@@ -18,7 +21,7 @@ void VanillaSimplexSolver::exchange(int inIndex, int outIndex) {
     pivotB.multi(toOneRatio);
     // normalize other rows to zero
 #ifdef PARALLEL
-#pragma omp parallel for
+#pragma omp parallel for default(none) shared(pivot) shared(pivotB) shared(inIndex) shared(outIndex)
 #endif
     for (int i = 0; i < m; i++) {
         if (i != outIndex) {
@@ -44,7 +47,6 @@ void VanillaSimplexSolver::exchange(int inIndex, int outIndex) {
 void VanillaSimplexSolver::solve(int &k, double &y, Matrix &x) {
     nonManualVariableCount = n;
     // add artificial variables
-    // TODO: optimize
     Matrix zero = Matrix(m, 1);
     Matrix one = Matrix(1, 1, 1);
     Matrix matrixM = Matrix(1, 1, M);
@@ -60,6 +62,13 @@ void VanillaSimplexSolver::solve(int &k, double &y, Matrix &x) {
     Row checkedArray = c[0];
     for (int i = 0; i < n; i++) {
         checkedArray[i] = -checkedArray[i];
+    }
+    // normalize checked number of mannual variables
+    for (int i = 0; i < m; i++) {
+        auto rowi = a[i];
+        checkedArray.addRow(rowi, M);
+        double delta = M * b[i][0];
+        value += delta;
     }
 #ifdef DEBUG
     printSimplexTable();
@@ -82,7 +91,7 @@ void VanillaSimplexSolver::solve(int &k, double &y, Matrix &x) {
                 }
                 if (flag) {
                     // All numbers in column i are <= 0: unbound!
-                    k = -1;
+                    k = 0;
                     return;
                 }
                 // get max index
@@ -102,29 +111,31 @@ void VanillaSimplexSolver::solve(int &k, double &y, Matrix &x) {
                     return;
                 }
             }
-            // judge infinity
-            for (int i = 0; i < nonManualVariableCount; i++) {
-                if (checkedArray[i] == 0) {
-                    // check if it's not base
-                    bool flag = false;
-                    for (auto &base : baseIndex) {
-                        if (base == i) {
-                            flag = true;
-                            break;
-                        }
-                    }
-                    if (!flag) {
-                        // infinite solutions!
-                        k = 0;
-                        return;
-                    }
-                }
-            }
+//            // judge infinity
+//            for (int i = 0; i < nonManualVariableCount; i++) {
+//                if (checkedArray[i] == 0) {
+//                    // check if it's not base
+//                    bool flag = false;
+//                    for (auto &base : baseIndex) {
+//                        if (base == i) {
+//                            flag = true;
+//                            break;
+//                        }
+//                    }
+//                    if (!flag) {
+//                        // infinite solutions!
+//                        k = 0;
+//                        return;
+//                    }
+//                }
+//            }
             // output answer
             k = 1;
             for (int i = 0; i < m; i++) {
                 int base = baseIndex[i];
-                x[0][base] = b[base][0];
+                if (base < m) {
+                    x[0][base] = b[i][0];
+                }
             }
             y = value;
             return;

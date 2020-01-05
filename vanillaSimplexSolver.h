@@ -5,7 +5,7 @@
 #include "utility.h"
 
 // TODO: max
-#define M 1e2
+#define M 1e9
 
 class VanillaSimplexSolver : public Solver {
 private:
