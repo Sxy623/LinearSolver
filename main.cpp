@@ -41,7 +41,7 @@ int main() {
 
     int k;
     double y;
-    Matrix x(1, n);
+    Matrix x(1, n + 2 * m);
     vanillaSimplexSolver.solve(k, y, x);
     cout << k << endl;
     if (k == 1) {
