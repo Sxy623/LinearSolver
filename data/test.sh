@@ -32,7 +32,12 @@ do
         echo "Infeasible"
     fi
     
-    start=$(date +%s%3N | cut -b1-13)
+    if [[ "$(uname)" == "Darwin" ]]
+    then
+        start=$(gdate +%s%3N | cut -b1-13)
+    else
+        start=$(date +%s%3N | cut -b1-13)
+    fi
     $1 < $input
     # if [[ "$status" == "1" ]]
     # then
@@ -41,7 +46,12 @@ do
     #     error=$(echo "scale=4; ($res-$opt)/$opt" | bc)
     #     echo "error = $error"
     # fi
-    end=$(date +%s%3N | cut -b1-13)
+    if [[ "$(uname)" == "Darwin" ]]
+    then
+        end=$(gdate +%s%3N | cut -b1-13)
+    else
+        end=$(date +%s%3N | cut -b1-13)
+    fi
     duration=$(( end - start ))
     echo "Test #$cnt finished in $duration ms"
     echo "------------"

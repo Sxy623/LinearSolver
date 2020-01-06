@@ -11,9 +11,9 @@ VanillaSimplexSolver::VanillaSimplexSolver(int n, int m, Matrix c, Matrix a, Mat
 VanillaSimplexSolver::~VanillaSimplexSolver() = default;
 
 void VanillaSimplexSolver::exchange(int inIndex, int outIndex) {
-//#ifdef DEBUG
+#ifdef DEBUG
     cout << "in: x" << inIndex << " out: x" << baseIndex[outIndex] << endl;
-//#endif
+#endif
     baseIndex[outIndex] = inIndex;
     Row pivot = a[outIndex];
     Row pivotB = b[outIndex];
