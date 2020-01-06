@@ -168,7 +168,7 @@ bool VanillaSimplexSolver::solveInternal() {
                 // judge unbound
                 bool flag = true;
                 for (int j = 0; j < m; j++) {
-                    if (a[j][i] > 0) {
+                    if (a[j][i] > 0 && !equal(a[j][i], 0)) {
                         flag = false;
                         break;
                     }
@@ -192,7 +192,7 @@ bool VanillaSimplexSolver::solveInternal() {
         int minOutIndex = INT_MAX;
         for (int i = 0; i < m; i++) {
             double aik = a[i][inIndex];
-            if (aik <= 0) continue;
+            if (aik <= 0 || equal(aik, 0)) continue;
             double ratio = b[i][0] / aik;
             if (outIndex == -1 || minRatio > ratio || (equal(minRatio, ratio) && baseIndex[i] < minOutIndex)) {
                 minRatio = ratio;
