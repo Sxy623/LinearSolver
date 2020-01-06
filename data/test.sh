@@ -19,8 +19,7 @@ do
     n=$(head -n1 $input | awk '{print $1;}')
     m=$(head -n1 $input | awk '{print $2;}')
     opt=$(sed '2q;d' $sol | awk '{print $1;}' | tr -d "\r")
-    status=$(head -n1 $sol | sed -e 's/\s.*$//')
-    
+    status=$(head -n1 $sol | sed -e 's/\s.*$//' | tr -d '\r')
     echo "Test #$cnt: $filename, $n x $m"
     if [[ "$status" == "1" ]]
     then
