@@ -11,6 +11,13 @@ DualSimplexSolver::DualSimplexSolver(int n, int m, const Matrix& c, const Matrix
 DualSimplexSolver::~DualSimplexSolver() = default;
 
 void DualSimplexSolver::solve(int &k, double &y, Matrix &x) {
+    // check if dual is feasible
+    for (auto j = 0; j < n; j++) {
+        if (c[0][j] < -EPS) {
+            k = -2;
+            return;
+        }
+    }
     // make it a max problem
     auto constrains = c[0];
     constrains.multi(-1.0);
@@ -71,7 +78,9 @@ void DualSimplexSolver::solve(int &k, double &y, Matrix &x) {
         }
         // the inBase index is found, swap and update
         pivot(outBaseIndex, inBaseIndex);
+#ifdef DEBUG
         printDual();
+#endif  
     }
 
 }

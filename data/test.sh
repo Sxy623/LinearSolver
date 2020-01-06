@@ -1,5 +1,9 @@
 #! /bin/bash
-
+if [ "$#" -ne 1 ]; then
+    echo "Usage: bash test.sh [PATH_TO_SOLVER]"
+    exit
+fi
+echo "$1"
 inputDir="./input/"
 outputDir="./output/"
 solDir="./solution/"
@@ -14,9 +18,8 @@ do
     
     n=$(head -n1 $input | awk '{print $1;}')
     m=$(head -n1 $input | awk '{print $2;}')
-    opt=$(sed '2q;d' $sol | awk '{print $1;}')
-    status=$(head -n1 $sol | sed -e 's/\s.*$//')
-    
+    opt=$(sed '2q;d' $sol | awk '{print $1;}' | tr -d "\r")
+    status=$(head -n1 $sol | sed -e 's/\s.*$//' | tr -d '\r')
     echo "Test #$cnt: $filename, $n x $m"
     if [[ "$status" == "1" ]]
     then
@@ -29,9 +32,17 @@ do
         echo "Infeasible"
     fi
     
-    start=$SECONDS
-    ./LinearSolver.exe < $input
-    duration=$(( SECONDS - start ))
-    echo "Test #$cnt finished in $duration s"
-    echo
+    start=$(date +%s%3N | cut -b1-13)
+    $1 < $input
+    # if [[ "$status" == "1" ]]
+    # then
+    #     res=$($1 < $input | sed '2q;d' | sed -e 's/\s.*$//' | tr -d "\r")
+    #     echo "res = $res"
+    #     error=$(echo "scale=4; ($res-$opt)/$opt" | bc)
+    #     echo "error = $error"
+    # fi
+    end=$(date +%s%3N | cut -b1-13)
+    duration=$(( end - start ))
+    echo "Test #$cnt finished in $duration ms"
+    echo "------------"
 done
