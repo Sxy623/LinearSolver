@@ -9,7 +9,7 @@
 //#define DEBUG
 //#define PARALLEL
 #define SIMPLEX
-// #define DUAL
+//#define DUAL
 
 const double EPS = 1e-5;
 
