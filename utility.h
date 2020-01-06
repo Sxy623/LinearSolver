@@ -6,7 +6,7 @@
 #define DOUBLE_FORMAT "%8.2f"
 
 // comment this in release!
-#define DEBUG
+//#define DEBUG
 //#define PARALLEL
 
 const double EPS = 1e-5;

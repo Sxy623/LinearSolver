@@ -11,9 +11,9 @@ VanillaSimplexSolver::VanillaSimplexSolver(int n, int m, Matrix c, Matrix a, Mat
 VanillaSimplexSolver::~VanillaSimplexSolver() = default;
 
 void VanillaSimplexSolver::exchange(int inIndex, int outIndex) {
-#ifdef DEBUG
+//#ifdef DEBUG
     cout << "in: x" << inIndex << " out: x" << baseIndex[outIndex] << endl;
-#endif
+//#endif
     baseIndex[outIndex] = inIndex;
     Row pivot = a[outIndex];
     Row pivotB = b[outIndex];
@@ -141,14 +141,16 @@ void VanillaSimplexSolver::solve(int &k, double &y, Matrix &x) {
             return;
         }
         int outIndex = -1;
+        int minOutIndex = INT_MAX;
         double minRatio = 0;
         for (int i = 0; i < m; i++) {
             double aik = a[i][inIndex];
-            if (aik <= 0) continue;
+            if (aik <= 0 || equal(aik, 0)) continue;
             double ratio = b[i][0] / aik;
-            if (outIndex == -1 || minRatio > ratio) {
+            if (outIndex == -1 || minRatio > ratio || (equal(minRatio, ratio) && baseIndex[i] < minOutIndex)) {
                 minRatio = ratio;
                 outIndex = i;
+                minOutIndex = baseIndex[i];
             }
         }
         // outIndex == -1 is impossible, due to this case is unbound!

@@ -59,18 +59,18 @@ int main() {
     cout << endl;
 
     cout << endl;
-    cout << ">>> Dual Simplex Method" << endl;
-    dualSimplexSolver.normalize();
-    dualSimplexSolver.solve(k, y, x);
-    vanillaSimplexSolver.recover(x);
-    cout << k << endl;
-    if (k == 1) {
-        cout << y << endl;
-        for (int i = 0; i < n; i++) {
-            cout << x[0][i] << " ";
-        }
-    }
-    cout << endl;
+//    cout << ">>> Dual Simplex Method" << endl;
+//    dualSimplexSolver.normalize();
+//    dualSimplexSolver.solve(k, y, x);
+//    vanillaSimplexSolver.recover(x);
+//    cout << k << endl;
+//    if (k == 1) {
+//        cout << y << endl;
+//        for (int i = 0; i < n; i++) {
+//            cout << x[0][i] << " ";
+//        }
+//    }
+//    cout << endl;
 
     return 0;
 }
