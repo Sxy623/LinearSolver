@@ -82,11 +82,12 @@ void VanillaSimplexSolver::solve(int &k, double &y, Matrix &x) {
         double maxCheckedNum = 0;
         for (int i = 0; i < n; i++) {
             double num = checkedArray[i];
-            if (num > 0) {
+            if (num > 0 && !equal(num, 0)) {
                 // judge unbound
                 bool flag = true;
                 for (int j = 0; j < m; j++) {
-                    if (a[j][i] > 0) {
+                    double aji = a[j][i];
+                    if (aji > 0 && !equal(aji, 0)) {
                         flag = false;
                         break;
                     }
@@ -97,7 +98,7 @@ void VanillaSimplexSolver::solve(int &k, double &y, Matrix &x) {
                     return;
                 }
                 // get max index
-                if (num > maxCheckedNum) {
+                if (num > maxCheckedNum && !equal(num, maxCheckedNum)) {
                     inIndex = i;
                     maxCheckedNum = num;
                 }
@@ -113,24 +114,6 @@ void VanillaSimplexSolver::solve(int &k, double &y, Matrix &x) {
                     return;
                 }
             }
-//            // judge infinity
-//            for (int i = 0; i < nonManualVariableCount; i++) {
-//                if (checkedArray[i] == 0) {
-//                    // check if it's not base
-//                    bool flag = false;
-//                    for (auto &base : baseIndex) {
-//                        if (base == i) {
-//                            flag = true;
-//                            break;
-//                        }
-//                    }
-//                    if (!flag) {
-//                        // infinite solutions!
-//                        k = 0;
-//                        return;
-//                    }
-//                }
-//            }
             // output answer
             k = 1;
             for (int i = 0; i < m; i++) {
