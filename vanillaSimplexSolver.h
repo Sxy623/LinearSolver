@@ -15,6 +15,11 @@ private:
 
     void exchange(int inIndex, int outIndex);
 
+    // return false: unbound
+    bool solveInternal();
+
+    void check();
+
 public:
     VanillaSimplexSolver(int n, int m, Matrix c, Matrix a, Matrix b, Matrix d, Matrix e);
 
@@ -22,11 +27,8 @@ public:
 
     void solve(int &k, double &y, Matrix &x) override;
 
-#ifdef DEBUG
-
     void printSimplexTable();
 
-#endif
 };
 
 #endif
