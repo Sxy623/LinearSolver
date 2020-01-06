@@ -78,9 +78,7 @@ void VanillaSimplexSolver::solve(int &k, double &y, Matrix &x) {
         double delta = b[i][0];
         value += delta;
     }
-    check();
     solveInternal();
-    check();
     if (!equal(value, 0)) {
         k = -1;
         return;
@@ -98,7 +96,6 @@ void VanillaSimplexSolver::solve(int &k, double &y, Matrix &x) {
         }
     }
 //    printSimplexTable();
-    check();
     // recover checked array
     for (int i = 0; i < nonManualVariableCount; i++) {
         c[0][i] = oldCheckedMat[0][i];
@@ -121,14 +118,12 @@ void VanillaSimplexSolver::solve(int &k, double &y, Matrix &x) {
         }
     }
 //    printSimplexTable();
-    check();
     // solve!
     bool notUnbound = solveInternal();
     if (!notUnbound) {
         k = 0;
         return;
     }
-    check();
     // output answer
     k = 1;
     for (int i = 0; i < m; i++) {
@@ -190,33 +185,18 @@ bool VanillaSimplexSolver::solveInternal() {
             }
         }
         if (inIndex == -1) {
-            // all of checked numbers are <= 0
-//            // judge manual variables
-//            for (int i = 0; i < m; i++) {
-//                if (baseIndex[i] >= nonManualVariableCount && b[i][0] != 0) {
-//                    // no feasible solution!
-//                    return -1;
-//                }
-//            }
-            // judge value
-            // output answer
             return true;
-//            k = 1;
-//            for (int i = 0; i < m; i++) {
-//                int base = baseIndex[i];
-//                x[0][base] = b[i][0];
-//            }
-//            y = value;
-//            return;
         }
         int outIndex = -1;
         double minRatio = 0;
+        int minOutIndex = INT_MAX;
         for (int i = 0; i < m; i++) {
             double aik = a[i][inIndex];
             if (aik <= 0) continue;
             double ratio = b[i][0] / aik;
-            if (outIndex == -1 || minRatio > ratio) {
+            if (outIndex == -1 || minRatio > ratio || (equal(minRatio, ratio) && baseIndex[i] < minOutIndex)) {
                 minRatio = ratio;
+                minOutIndex = baseIndex[i];
                 outIndex = i;
             }
         }
@@ -226,24 +206,5 @@ bool VanillaSimplexSolver::solveInternal() {
 #ifdef DEBUG
         printSimplexTable();
 #endif
-        check();
-    }
-}
-
-void VanillaSimplexSolver::check() {
-    for (int i = 0; i < m; i++) {
-//        if (!equal(0, c[0][baseIndex[i]])) {
-        if (!equal(1, a[i][baseIndex[i]])) {
-            printSimplexTable();
-            cout << "error!" << i << "  " << baseIndex[i] << " " << a[i][baseIndex[i]] << endl;
-            exit(0);
-        }
-        for (int j = 0; j < m; j++) {
-            if (i != j && !equal(0, a[j][baseIndex[i]])) {
-                printSimplexTable();
-                cout << "error!" << i << " " << j << "  " << baseIndex[i] << " " << a[j][baseIndex[i]] << endl;
-                exit(0);
-            }
-        }
     }
 }

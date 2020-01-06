@@ -18,8 +18,6 @@ private:
     // return false: unbound
     bool solveInternal();
 
-    void check();
-
 public:
     VanillaSimplexSolver(int n, int m, Matrix c, Matrix a, Matrix b, Matrix d, Matrix e);
 
