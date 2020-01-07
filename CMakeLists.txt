@@ -52,8 +52,9 @@ file(GLOB SOURCE_FILES
         "row.cpp"
         "solver.cpp"
         "matrix.cpp"
+        "bigMSolver.cpp"
+        "doubleStageSolver.cpp"
         "dualSimplexSolver.cpp"
-        "vanillaSimplexSolver.cpp"
         "utility.cpp"
         )
 

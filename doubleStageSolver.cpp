@@ -1,18 +1,18 @@
-#include "vanillaSimplexSolver.h"
+#include "doubleStageSolver.h"
 #include "utility.h"
 #ifdef PARALLEL
 #include "omp.h"
 #endif
 
-VanillaSimplexSolver::VanillaSimplexSolver(int n, int m, Matrix c, Matrix a, Matrix b, Matrix d,
+DoubleStageSolver::DoubleStageSolver(int n, int m, Matrix c, Matrix a, Matrix b, Matrix d,
                                            Matrix e) :
         Solver(n, m, c, a, b, d, e) {}
 
-VanillaSimplexSolver::~VanillaSimplexSolver() = default;
+DoubleStageSolver::~DoubleStageSolver() = default;
 
-void VanillaSimplexSolver::exchange(int inIndex, int outIndex) {
+void DoubleStageSolver::exchange(int inIndex, int outIndex) {
 #ifdef DEBUG
-    cout << "in: x" << inIndex << " out: x" << baseIndex[outIndex] << endl;
+    cout << outIndex << " - in: x" << inIndex << " out: x" << baseIndex[outIndex] << endl;
 #endif
     baseIndex[outIndex] = inIndex;
     Row pivot = a[outIndex];
@@ -46,16 +46,15 @@ void VanillaSimplexSolver::exchange(int inIndex, int outIndex) {
     value += pivotB[0] * ratio;
 }
 
-void VanillaSimplexSolver::solve(int &k, double &y, Matrix &x) {
+void DoubleStageSolver::solve(int &k, double &y, Matrix &x) {
     nonManualVariableCount = n;
     // add artificial variables
     Matrix zero = Matrix(m, 1);
     Matrix one = Matrix(1, 1, 1);
-    Matrix matrixM = Matrix(1, 1, M);
     for (int i = 0; i < m; i++) {
         a.appendColumn(zero);
         a[i][n] = 1;
-        c.appendColumn(matrixM);
+        c.appendColumn(one);
         e.appendColumn(one);
         baseIndex.push_back(n);
         n++;
@@ -65,89 +64,78 @@ void VanillaSimplexSolver::solve(int &k, double &y, Matrix &x) {
     for (int i = 0; i < n; i++) {
         checkedArray[i] = -checkedArray[i];
     }
-    // normalize checked number of mannual variables
+//    printSimplexTable();
+
+    // 1st stage: min sum of artificial variables
+    Matrix oldCheckedMat(c);
+    for (int i = 0; i < nonManualVariableCount; i++) {
+        checkedArray[i] = 0;
+    }
+    // normalize checked number of artificial variables
     for (int i = 0; i < m; i++) {
         auto rowi = a[i];
-        checkedArray.addRow(rowi, M);
-        double delta = M * b[i][0];
+        checkedArray.addRow(rowi, 1);
+        double delta = b[i][0];
         value += delta;
     }
-#ifdef DEBUG
-    printSimplexTable();
-#endif
-
-    while (true) {
-        // get max
-        int inIndex = -1;
-        double maxCheckedNum = 0;
-        for (int i = 0; i < n; i++) {
-            double num = checkedArray[i];
-            if (num > 0 && !equal(num, 0)) {
-                // judge unbound
-                bool flag = true;
-                for (int j = 0; j < m; j++) {
-                    double aji = a[j][i];
-                    if (aji > 0 && !equal(aji, 0)) {
-                        flag = false;
-                        break;
-                    }
-                }
-                if (flag) {
-                    // All numbers in column i are <= 0: unbound!
-                    k = 0;
-                    return;
-                }
-                // get max index
-                if (num > maxCheckedNum && !equal(num, maxCheckedNum)) {
-                    inIndex = i;
-                    maxCheckedNum = num;
-                }
-            }
-        }
-        if (inIndex == -1) {
-            // all of checked numbers are <= 0
-            // judge manual variables
-            for (int i = 0; i < m; i++) {
-                if (baseIndex[i] >= nonManualVariableCount && b[i][0] != 0) {
-                    // no feasible solution!
-                    k = -1;
-                    return;
-                }
-            }
-            // output answer
-            k = 1;
-            for (int i = 0; i < m; i++) {
-                int base = baseIndex[i];
-                x[0][base] = b[i][0];
-            }
-            y = value;
-            return;
-        }
-        int outIndex = -1;
-        int minOutIndex = INT_MAX;
-        double minRatio = 0;
-        for (int i = 0; i < m; i++) {
-            double aik = a[i][inIndex];
-            if (aik <= 0 || equal(aik, 0)) continue;
-            double ratio = b[i][0] / aik;
-            if (outIndex == -1 || minRatio > ratio || (equal(minRatio, ratio) && baseIndex[i] < minOutIndex)) {
-                minRatio = ratio;
-                outIndex = i;
-                minOutIndex = baseIndex[i];
-            }
-        }
-        // outIndex == -1 is impossible, due to this case is unbound!
-        exchange(inIndex, outIndex);
-
-#ifdef DEBUG
-        printSimplexTable();
-#endif
+    solveInternal();
+    if (!equal(value, 0)) {
+        k = -1;
+        return;
     }
+    // check if there is an artificial variable in base
+    for (int i = 0; i < m; i++) {
+        if (baseIndex[i] >= nonManualVariableCount) {
+            for (int j = 0; j < nonManualVariableCount; j++) {
+                if (!equal(checkedArray[j], 0)) {
+                    exchange(j, i);
+                    break;
+                }
+            }
+
+        }
+    }
+//    printSimplexTable();
+    // recover checked array
+    for (int i = 0; i < nonManualVariableCount; i++) {
+        c[0][i] = oldCheckedMat[0][i];
+    }
+    for (int i = nonManualVariableCount; i < n; i++) {
+        c[0][i] = 0;
+    }
+    n = nonManualVariableCount;
+//    cout << "2nd" << endl;
+//    printSimplexTable();
+    // 2nd stage: solve others
+    // normalize checked number
+    for (int i = 0; i < m; i++) {
+        int base = baseIndex[i];
+        double baseCheckedNum = checkedArray[base];
+        if (baseCheckedNum != 0) {
+            auto currentRow = a[i];
+            checkedArray.addRow(currentRow, -baseCheckedNum);
+            value -= b[i][0] * baseCheckedNum;
+        }
+    }
+//    printSimplexTable();
+    // solve!
+    bool notUnbound = solveInternal();
+    if (!notUnbound) {
+        k = 0;
+        return;
+    }
+    // output answer
+    k = 1;
+    for (int i = 0; i < m; i++) {
+        int base = baseIndex[i];
+        x[0][base] = b[i][0];
+    }
+    y = value;
 }
 
-#ifdef DEBUG
 
-void VanillaSimplexSolver::printSimplexTable() {
+void DoubleStageSolver::printSimplexTable() {
+//#ifdef DEBUG
     printf("============  Simplex Table  ===========\n    ");
     for (int i = 0; i < n; i++) {
         printf(DOUBLE_FORMAT, c[0][i]);
@@ -163,6 +151,61 @@ void VanillaSimplexSolver::printSimplexTable() {
         printf(DOUBLE_FORMAT, b[i][0]);
         printf("\n");
     }
+//#endif
 }
 
+bool DoubleStageSolver::solveInternal() {
+    auto checkedArray = c[0];
+    int count = 0;
+    while (true) {
+        // get max
+        // cout << count++ << " " << value << " " << n << endl;
+        int inIndex = -1;
+        double maxCheckedNum = 0;
+        for (int i = 0; i < n; i++) {
+            double num = checkedArray[i];
+            if (num > 0 && !equal(num, 0)) {
+                // judge unbound
+                bool flag = true;
+                for (int j = 0; j < m; j++) {
+                    if (a[j][i] > 0 && !equal(a[j][i], 0)) {
+                        flag = false;
+                        break;
+                    }
+                }
+                if (flag) {
+                    // All numbers in column i are <= 0: unbound!
+                    return false;
+                }
+                // get max index
+                if (num > maxCheckedNum && !equal(num, maxCheckedNum)) {
+                    inIndex = i;
+                    maxCheckedNum = num;
+                }
+            }
+        }
+        if (inIndex == -1) {
+            return true;
+        }
+        int outIndex = -1;
+        int minOutIndex = INT_MAX;
+        double minRatio = 0;
+        for (int i = 0; i < m; i++) {
+            double aik = a[i][inIndex];
+            if (aik <= 0 || equal(aik, 0)) continue;
+            double ratio = b[i][0] / aik;
+            if (outIndex == -1 || minRatio > ratio || (equal(minRatio, ratio) && baseIndex[i] < minOutIndex)) {
+                minRatio = ratio;
+                minOutIndex = baseIndex[i];
+                outIndex = i;
+                minOutIndex = baseIndex[i];
+            }
+        }
+        // outIndex == -1 is impossible, due to this case is unbound!
+        exchange(inIndex, outIndex);
+
+#ifdef DEBUG
+        printSimplexTable();
 #endif
+    }
+}

@@ -1,5 +1,5 @@
-#ifndef VANILLA_SIMPLEX_SOLVER_H
-#define VANILLA_SIMPLEX_SOLVER_H
+#ifndef DOUBLE_STAGE_SOLVER_H
+#define DOUBLE_STAGE_SOLVER_H
 
 #include "solver.h"
 #include "utility.h"
@@ -7,7 +7,7 @@
 // TODO: max
 #define M 1e3
 
-class VanillaSimplexSolver : public Solver {
+class DoubleStageSolver : public Solver {
 private:
     double value = 0;
     int nonManualVariableCount = 0;
@@ -15,18 +15,18 @@ private:
 
     void exchange(int inIndex, int outIndex);
 
-public:
-    VanillaSimplexSolver(int n, int m, Matrix c, Matrix a, Matrix b, Matrix d, Matrix e);
+    // return false: unbound
+    bool solveInternal();
 
-    ~VanillaSimplexSolver();
+public:
+    DoubleStageSolver(int n, int m, Matrix c, Matrix a, Matrix b, Matrix d, Matrix e);
+
+    ~DoubleStageSolver();
 
     void solve(int &k, double &y, Matrix &x) override;
 
-#ifdef DEBUG
-
     void printSimplexTable();
 
-#endif
 };
 
 #endif
