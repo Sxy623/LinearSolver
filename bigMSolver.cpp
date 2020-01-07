@@ -82,12 +82,12 @@ void BigMSolver::solve(int &k, double &y, Matrix &x) {
         double maxCheckedNum = 0;
         for (int i = 0; i < n; i++) {
             double num = checkedArray[i];
-            if (num > 0 && !equal(num, 0)) {
+            if (GRE(num, 0)) {
                 // judge unbound
                 bool flag = true;
                 for (int j = 0; j < m; j++) {
                     double aji = a[j][i];
-                    if (aji > 0 && !equal(aji, 0)) {
+                    if (GRE(aji, 0)) {
                         flag = false;
                         break;
                     }
@@ -98,7 +98,7 @@ void BigMSolver::solve(int &k, double &y, Matrix &x) {
                     return;
                 }
                 // get max index
-                if (num > maxCheckedNum && !equal(num, maxCheckedNum)) {
+                if (GRE(num, maxCheckedNum)) {
                     inIndex = i;
                     maxCheckedNum = num;
                 }
@@ -128,9 +128,9 @@ void BigMSolver::solve(int &k, double &y, Matrix &x) {
         double minRatio = 0;
         for (int i = 0; i < m; i++) {
             double aik = a[i][inIndex];
-            if (aik <= 0 || equal(aik, 0)) continue;
+            if (GEQ(0, aik)) continue;
             double ratio = b[i][0] / aik;
-            if (outIndex == -1 || minRatio > ratio || (equal(minRatio, ratio) && baseIndex[i] < minOutIndex)) {
+            if (outIndex == -1 || GRE(minRatio, ratio) || (equal(minRatio, ratio) && baseIndex[i] < minOutIndex)) {
                 minRatio = ratio;
                 outIndex = i;
                 minOutIndex = baseIndex[i];

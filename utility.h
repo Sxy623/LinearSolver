@@ -5,9 +5,12 @@
 #define ITEM_NO_COEFFICIENT_FORMAT "        x%-3d"
 #define DOUBLE_FORMAT "%8.2f"
 
+#define GRE(x, y) (x > y && !equal(x, y))
+#define GEQ(x, y) (x > y || equal(x, y))
+
 // comment this in release!
 //#define DEBUG
-//#define PARALLEL
+#define PARALLEL
 //#define SIMPLEX_BIG_M
 #define SIMPLEX_DOUBLE_STAGE
 //#define DUAL

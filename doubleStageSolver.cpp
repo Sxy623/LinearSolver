@@ -164,11 +164,11 @@ bool DoubleStageSolver::solveInternal() {
         double maxCheckedNum = 0;
         for (int i = 0; i < n; i++) {
             double num = checkedArray[i];
-            if (num > 0 && !equal(num, 0)) {
+            if (GRE(num, 0)) {
                 // judge unbound
                 bool flag = true;
                 for (int j = 0; j < m; j++) {
-                    if (a[j][i] > 0 && !equal(a[j][i], 0)) {
+                    if (GRE(a[j][i], 0)) {
                         flag = false;
                         break;
                     }
@@ -178,7 +178,7 @@ bool DoubleStageSolver::solveInternal() {
                     return false;
                 }
                 // get max index
-                if (num > maxCheckedNum && !equal(num, maxCheckedNum)) {
+                if (GRE(num, maxCheckedNum)) {
                     inIndex = i;
                     maxCheckedNum = num;
                 }
@@ -192,13 +192,12 @@ bool DoubleStageSolver::solveInternal() {
         double minRatio = 0;
         for (int i = 0; i < m; i++) {
             double aik = a[i][inIndex];
-            if (aik <= 0 || equal(aik, 0)) continue;
+            if (GEQ(0, aik)) continue;
             double ratio = b[i][0] / aik;
-            if (outIndex == -1 || minRatio > ratio || (equal(minRatio, ratio) && baseIndex[i] < minOutIndex)) {
+            if (outIndex == -1 || GRE(minRatio, ratio) || (equal(minRatio, ratio) && baseIndex[i] < minOutIndex)) {
                 minRatio = ratio;
                 minOutIndex = baseIndex[i];
                 outIndex = i;
-                minOutIndex = baseIndex[i];
             }
         }
         // outIndex == -1 is impossible, due to this case is unbound!
