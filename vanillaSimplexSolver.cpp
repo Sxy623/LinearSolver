@@ -188,6 +188,7 @@ bool VanillaSimplexSolver::solveInternal() {
             return true;
         }
         int outIndex = -1;
+        int minOutIndex = INT_MAX;
         double minRatio = 0;
         int minOutIndex = INT_MAX;
         for (int i = 0; i < m; i++) {
@@ -198,6 +199,7 @@ bool VanillaSimplexSolver::solveInternal() {
                 minRatio = ratio;
                 minOutIndex = baseIndex[i];
                 outIndex = i;
+                minOutIndex = baseIndex[i];
             }
         }
         // outIndex == -1 is impossible, due to this case is unbound!

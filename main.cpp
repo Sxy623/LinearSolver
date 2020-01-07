@@ -45,8 +45,11 @@ int main() {
     double y;
     Matrix x(1, n + 2 * m);
 
+#ifdef DEBUG
     cout << endl;
     cout << ">>> Simplex Method" << endl;
+#endif
+#ifdef SIMPLEX
     vanillaSimplexSolver.solve(k, y, x);
 //    vanillaSimplexSolver.printSimplexTable();
     vanillaSimplexSolver.recover(x);
@@ -58,20 +61,26 @@ int main() {
         }
     }
     cout << endl;
+#endif
 
-//    cout << endl;
-//    cout << ">>> Dual Simplex Method" << endl;
-//    dualSimplexSolver.normalize();
-//    dualSimplexSolver.solve(k, y, x);
-//    vanillaSimplexSolver.recover(x);
-//    cout << k << endl;
-//    if (k == 1) {
-//        cout << y << endl;
-//        for (int i = 0; i < n; i++) {
-//            cout << x[0][i] << " ";
-//        }
-//    }
-//    cout << endl;
+#ifdef DEBUG
+    cout << endl;
+    cout << ">>> Dual Simplex Method" << endl;
+#endif
+#ifdef DUAL
+    dualSimplexSolver.normalize();
+    dualSimplexSolver.solve(k, y, x);
+    vanillaSimplexSolver.recover(x);
+    cout << k << endl;
+    if (k == 1) {
+        cout << y << endl;
+        for (int i = 0; i < n; i++) {
+            cout << x[0][i] << " ";
+        }
+    }
+    cout << endl;
+#endif
+
 
     return 0;
 }
