@@ -3,6 +3,7 @@
 #include "doubleStageSolver.h"
 #include "dualSimplexSolver.h"
 #include <iostream>
+#include <iomanip>
 
 using namespace std;
 
@@ -53,14 +54,6 @@ int main() {
 #endif
     bigMSolver.solve(k, y, x);
     bigMSolver.recover(x);
-    cout << k << endl;
-    if (k == 1) {
-        cout << y << endl;
-        for (int i = 0; i < n; i++) {
-            cout << x[0][i] << " ";
-        }
-    }
-    cout << endl;
 #endif
 
     /* Simplex Method - Double Stage */
@@ -88,14 +81,6 @@ int main() {
 #endif
     doubleStageSolver.solve(k, y, x);
     doubleStageSolver.recover(x);
-    cout << k << endl;
-    if (k == 1) {
-        cout << y << endl;
-        for (int i = 0; i < n; i++) {
-            cout << x[0][i] << " ";
-        }
-    }
-    cout << endl;
 #endif
 
     /* Dual Simplex Method */
@@ -123,15 +108,16 @@ int main() {
 #endif
     dualSimplexSolver.solve(k, y, x);
     dualSimplexSolver.recover(x);
+#endif
+    cout << fixed << setprecision(6);
     cout << k << endl;
     if (k == 1) {
         cout << y << endl;
         for (int i = 0; i < n; i++) {
             cout << x[0][i] << " ";
         }
+        cout << endl;
     }
-    cout << endl;
-#endif
 
     return 0;
 }
