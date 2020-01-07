@@ -51,6 +51,7 @@ int main() {
 #endif
 #ifdef SIMPLEX
     vanillaSimplexSolver.solve(k, y, x);
+//    vanillaSimplexSolver.printSimplexTable();
     vanillaSimplexSolver.recover(x);
     cout << k << endl;
     if (k == 1) {
@@ -79,6 +80,7 @@ int main() {
     }
     cout << endl;
 #endif
+
 
     return 0;
 }
