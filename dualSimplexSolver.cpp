@@ -1,11 +1,12 @@
 #include "dualSimplexSolver.h"
+
 #ifdef PARALLEL
 #include "omp.h"
 #endif
 
 
-
-DualSimplexSolver::DualSimplexSolver(int n, int m, const Matrix& c, const Matrix& a, const Matrix& b, const Matrix& d, const Matrix& e) :
+DualSimplexSolver::DualSimplexSolver(int n, int m, const Matrix &c, const Matrix &a, const Matrix &b, const Matrix &d,
+                                     const Matrix &e) :
         Solver(n, m, c, a, b, d, e) {
     targetValue = 0.0;
 }
@@ -38,14 +39,16 @@ void DualSimplexSolver::solve(int &k, double &y, Matrix &x) {
     }
     for (auto i = 0; i < m; i++) { // for each row
         // reverse the row
-        auto rowA = a[i];
-        auto rowB = b[i];
-        rowA.multi(-1.0);
-        rowB.multi(-1.0);
+        if (equal(a[i][n - m + i], -1.0)) {
+            auto rowA = a[i];
+            auto rowB = b[i];
+            rowA.multi(-1.0);
+            rowB.multi(-1.0);
+        }
     }
 #ifdef DEBUG
     printDual();
-#endif  
+#endif
     while (true) {
         // find the base
         int outBaseIndex = -1;
@@ -54,7 +57,7 @@ void DualSimplexSolver::solve(int &k, double &y, Matrix &x) {
         int minOutBaseIndex = -1;
         for (auto i = 0; i < m; i++) {
             // always return the smallest one that is smaller than 0
-            if (GRE(tb, b[i][0])|| (equal(b[i][0], tb) && baseIndices[i] < minOutBaseIndex)) {
+            if (GRE(tb, b[i][0]) || (equal(b[i][0], tb) && baseIndices[i] < minOutBaseIndex)) {
                 tb = b[i][0];
                 outBaseIndex = i;
                 minOutBaseIndex = baseIndices[i];
@@ -78,7 +81,8 @@ void DualSimplexSolver::solve(int &k, double &y, Matrix &x) {
             // check A_i
             if (GEQ(a[outBaseIndex][verifyIndices[j]], 0.0)) continue;
             double nRatio = std::abs(c[0][verifyIndices[j]] / a[outBaseIndex][verifyIndices[j]]);
-            if (inBaseIndex == -1 || GRE(ratio, nRatio) || (equal(nRatio, ratio) && verifyIndices[j] < minInBaseIndex)) {
+            if (inBaseIndex == -1 || GRE(ratio, nRatio) ||
+                (equal(nRatio, ratio) && verifyIndices[j] < minInBaseIndex)) {
                 inBaseIndex = j;
                 ratio = nRatio;
                 minInBaseIndex = verifyIndices[j];
@@ -91,12 +95,13 @@ void DualSimplexSolver::solve(int &k, double &y, Matrix &x) {
         }
         // the inBase index is found, swap and update
 #ifdef DEBUG
-        cout << "in: x" << verifyIndices[inBaseIndex] << " out: x" << baseIndices[outBaseIndex] << " Target value: " << targetValue << endl;
+        cout << "in: x" << verifyIndices[inBaseIndex] << " out: x" << baseIndices[outBaseIndex] << " Target value: "
+             << targetValue << endl;
 #endif
         pivot(outBaseIndex, inBaseIndex);
 #ifdef DEBUG
         printDual();
-#endif  
+#endif
     }
 
 }
@@ -122,7 +127,7 @@ void DualSimplexSolver::pivot(int outBaseIndex, int inBaseIndex) {
         }
 #ifdef DEBUG
 #ifdef PARALLEL
-    printf("parallel: i = %d, run on Thread %d!\n", i, omp_get_thread_num());
+        printf("parallel: i = %d, run on Thread %d!\n", i, omp_get_thread_num());
 #endif
 #endif
     }
