@@ -11,8 +11,8 @@
 // comment this in release!
 //#define DEBUG
 //#define PARALLEL
-//#define SIMPLEX_BIG_M
-#define SIMPLEX_DOUBLE_STAGE
+#define SIMPLEX_BIG_M
+//#define SIMPLEX_DOUBLE_STAGE
 //#define DUAL
 
 const double EPS = 1e-5;
