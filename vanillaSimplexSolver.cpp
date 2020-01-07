@@ -164,7 +164,7 @@ bool VanillaSimplexSolver::solveInternal() {
         double maxCheckedNum = 0;
         for (int i = 0; i < n; i++) {
             double num = checkedArray[i];
-            if (num > 0) {
+            if (num > 0 && !equal(num, 0)) {
                 // judge unbound
                 bool flag = true;
                 for (int j = 0; j < m; j++) {
@@ -178,7 +178,7 @@ bool VanillaSimplexSolver::solveInternal() {
                     return false;
                 }
                 // get max index
-                if (num > maxCheckedNum) {
+                if (num > maxCheckedNum && !equal(num, maxCheckedNum)) {
                     inIndex = i;
                     maxCheckedNum = num;
                 }
