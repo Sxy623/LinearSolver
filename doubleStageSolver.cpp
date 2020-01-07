@@ -1,19 +1,19 @@
-#include "vanillaSimplexSolver.h"
+#include "doubleStageSolver.h"
 #include "utility.h"
 #ifdef PARALLEL
 #include "omp.h"
 #endif
 
-VanillaSimplexSolver::VanillaSimplexSolver(int n, int m, Matrix c, Matrix a, Matrix b, Matrix d,
+DoubleStageSolver::DoubleStageSolver(int n, int m, Matrix c, Matrix a, Matrix b, Matrix d,
                                            Matrix e) :
         Solver(n, m, c, a, b, d, e) {}
 
-VanillaSimplexSolver::~VanillaSimplexSolver() = default;
+DoubleStageSolver::~DoubleStageSolver() = default;
 
-void VanillaSimplexSolver::exchange(int inIndex, int outIndex) {
-//#ifdef DEBUG
+void DoubleStageSolver::exchange(int inIndex, int outIndex) {
+#ifdef DEBUG
     cout << outIndex << " - in: x" << inIndex << " out: x" << baseIndex[outIndex] << endl;
-//#endif
+#endif
     baseIndex[outIndex] = inIndex;
     Row pivot = a[outIndex];
     Row pivotB = b[outIndex];
@@ -46,7 +46,7 @@ void VanillaSimplexSolver::exchange(int inIndex, int outIndex) {
     value += pivotB[0] * ratio;
 }
 
-void VanillaSimplexSolver::solve(int &k, double &y, Matrix &x) {
+void DoubleStageSolver::solve(int &k, double &y, Matrix &x) {
     nonManualVariableCount = n;
     // add artificial variables
     Matrix zero = Matrix(m, 1);
@@ -104,7 +104,7 @@ void VanillaSimplexSolver::solve(int &k, double &y, Matrix &x) {
         c[0][i] = 0;
     }
     n = nonManualVariableCount;
-    cout << "2nd" << endl;
+//    cout << "2nd" << endl;
 //    printSimplexTable();
     // 2nd stage: solve others
     // normalize checked number
@@ -134,7 +134,7 @@ void VanillaSimplexSolver::solve(int &k, double &y, Matrix &x) {
 }
 
 
-void VanillaSimplexSolver::printSimplexTable() {
+void DoubleStageSolver::printSimplexTable() {
 //#ifdef DEBUG
     printf("============  Simplex Table  ===========\n    ");
     for (int i = 0; i < n; i++) {
@@ -154,12 +154,12 @@ void VanillaSimplexSolver::printSimplexTable() {
 //#endif
 }
 
-bool VanillaSimplexSolver::solveInternal() {
+bool DoubleStageSolver::solveInternal() {
     auto checkedArray = c[0];
     int count = 0;
     while (true) {
         // get max
-        cout << count++ << " " << value << " " << n << endl;
+        // cout << count++ << " " << value << " " << n << endl;
         int inIndex = -1;
         double maxCheckedNum = 0;
         for (int i = 0; i < n; i++) {
@@ -190,7 +190,6 @@ bool VanillaSimplexSolver::solveInternal() {
         int outIndex = -1;
         int minOutIndex = INT_MAX;
         double minRatio = 0;
-        int minOutIndex = INT_MAX;
         for (int i = 0; i < m; i++) {
             double aik = a[i][inIndex];
             if (aik <= 0 || equal(aik, 0)) continue;
