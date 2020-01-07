@@ -87,7 +87,7 @@ void DoubleStageSolver::solve(int &k, double &y, Matrix &x) {
     for (int i = 0; i < m; i++) {
         if (baseIndex[i] >= nonManualVariableCount) {
             for (int j = 0; j < nonManualVariableCount; j++) {
-                if (!equal(checkedArray[j], 0)) {
+                if (!equal(checkedArray[j], 0) && !equal(a[i][j], 0)) {
                     exchange(j, i);
                     break;
                 }
