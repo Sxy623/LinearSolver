@@ -22,13 +22,17 @@ void DualSimplexSolver::solve(int &k, double &y, Matrix &x) {
     auto constrains = c[0];
     constrains.multi(-1.0);
     // the problem is relaxed and normalized
-    for (auto j = 0; j < n; j++) {
+    for (auto j = n - m; j < n; j++) {
         if (equal(constrains[j], 0.0)) {
             // if it's slack variable
             baseIndices.push_back(j);
         } else {
-            verifyIndices.push_back(j);
+            k = -2;
+            return;
         }
+    }
+    for (auto j = 0; j <= n - m - 1; j++) {
+        verifyIndices.push_back(j);
     }
     for (auto i = 0; i < m; i++) { // for each row
         // reverse the row
@@ -37,6 +41,9 @@ void DualSimplexSolver::solve(int &k, double &y, Matrix &x) {
         rowA.multi(-1.0);
         rowB.multi(-1.0);
     }
+#ifdef DEBUG
+    printDual();
+#endif  
     while (true) {
         // find the base
         int outBaseIndex = -1;
@@ -77,6 +84,9 @@ void DualSimplexSolver::solve(int &k, double &y, Matrix &x) {
             return;
         }
         // the inBase index is found, swap and update
+#ifdef DEBUG
+        cout << "in: x" << verifyIndices[inBaseIndex] << " out: x" << baseIndices[outBaseIndex] << endl;
+#endif
         pivot(outBaseIndex, inBaseIndex);
 #ifdef DEBUG
         printDual();
