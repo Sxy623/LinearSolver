@@ -6,6 +6,9 @@
 #include <cmath>
 
 #define MAX = 1e9
+#define GRE(x, y) (x > y && !equal(x, y))
+#define GEQ(x, y) (x > y || equal(x, y))
+
 
 class DualSimplexSolver : public Solver {
 public:

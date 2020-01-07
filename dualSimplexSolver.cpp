@@ -3,6 +3,8 @@
 #include "omp.h"
 #endif
 
+
+
 DualSimplexSolver::DualSimplexSolver(int n, int m, const Matrix& c, const Matrix& a, const Matrix& b, const Matrix& d, const Matrix& e) :
         Solver(n, m, c, a, b, d, e) {
     targetValue = 0.0;
@@ -49,11 +51,13 @@ void DualSimplexSolver::solve(int &k, double &y, Matrix &x) {
         int outBaseIndex = -1;
         int inBaseIndex = -1; // index in verifyIndices vector
         double tb = 0.0;
+        int minOutBaseIndex = -1;
         for (auto i = 0; i < m; i++) {
             // always return the smallest one that is smaller than 0
-            if (b[i][0] < tb) {
+            if (GRE(tb, b[i][0])|| (equal(b[i][0], tb) && baseIndices[i] < minOutBaseIndex)) {
                 tb = b[i][0];
                 outBaseIndex = i;
+                minOutBaseIndex = baseIndices[i];
             }
         }
         if (outBaseIndex == -1) {
@@ -69,13 +73,15 @@ void DualSimplexSolver::solve(int &k, double &y, Matrix &x) {
         // at least one smaller than 0
         // find the smallest absolute ratio
         double ratio = 0;
+        int minInBaseIndex = -1;
         for (auto j = 0; j < verifyIndices.size(); j++) {
             // check A_i
-            if (a[outBaseIndex][j] >= 0) continue;
+            if (GEQ(a[outBaseIndex][verifyIndices[j]], 0.0)) continue;
             double nRatio = std::abs(c[0][verifyIndices[j]] / a[outBaseIndex][verifyIndices[j]]);
-            if (inBaseIndex == -1 || (nRatio < ratio)) {
+            if (inBaseIndex == -1 || GRE(ratio, nRatio) || (equal(nRatio, ratio) && verifyIndices[j] < minInBaseIndex)) {
                 inBaseIndex = j;
                 ratio = nRatio;
+                minInBaseIndex = verifyIndices[j];
             }
         }
         if (inBaseIndex == -1) {
@@ -85,7 +91,7 @@ void DualSimplexSolver::solve(int &k, double &y, Matrix &x) {
         }
         // the inBase index is found, swap and update
 #ifdef DEBUG
-        cout << "in: x" << verifyIndices[inBaseIndex] << " out: x" << baseIndices[outBaseIndex] << endl;
+        cout << "in: x" << verifyIndices[inBaseIndex] << " out: x" << baseIndices[outBaseIndex] << " Target value: " << targetValue << endl;
 #endif
         pivot(outBaseIndex, inBaseIndex);
 #ifdef DEBUG
